@@ -1,0 +1,1 @@
+exports.SEARCH_INTENT = "query.search"
