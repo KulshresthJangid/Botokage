@@ -6,7 +6,7 @@ const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'root',
-    database: 'botify_camp_duplicate'
+    database: 'botokage_test_db'
 })
 
 connection.connect((err) => {
@@ -14,11 +14,14 @@ connection.connect((err) => {
     console.log("Your sql database connected successfully")
 })
 
-connection.query('SHOW TABLES', function(error, results) {
-    if(error) console.log(error);
-    const tableNames = results.map(result => result[`Tables_in_${connection.config.database}`]);
+connection.query('SHOW TABLES', function (error, results) {
+    if (error) console.log(error);
+    let tableNames
+    if (results) {
+        tableNames = results.map(result => result[`Tables_in_${connection.config.database}`]);
+    }
     console.log(tableNames);
-    dbManager.addNamedEntityText('table', tableNames ,['en'], tableNames);
+    dbManager.addNamedEntityText('table', tableNames, ['en'], tableNames);
 });
 
 

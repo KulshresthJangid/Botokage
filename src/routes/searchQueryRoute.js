@@ -3,7 +3,7 @@ const { NlpManager } = require('node-nlp');
 
 
 const dbManager = require('../nlps/dbNllp')
-const Constants = require('../Constants')
+const Constants = require('../../Constants')
 const connection = require('../dbs/nlpBotDB')
 
 
