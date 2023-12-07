@@ -1,7 +1,10 @@
-const mysql = require('mysql');
+import * as mysql from 'mysql';
 
 class MySqlConnection {
-    constructor(host, user, password, database) {
+    private connectionDetails: mysql.ConnectionConfig;
+    private connection: mysql.Connection;
+
+    constructor(host: string, user: string, password: string, database: string) {
         this.connectionDetails = {
             host,
             user,
@@ -11,42 +14,42 @@ class MySqlConnection {
         this.connection = mysql.createConnection(this.connectionDetails);
     }
 
-    connect() {
+    connect(): void {
         this.connection.connect();
     }
 
-    query(sql, values, callback) {
+    query(sql: string, values: any, callback: (error: mysql.MysqlError | null, results: any, fields: mysql.FieldInfo[] | undefined) => void): void {
         this.connection.query(sql, values, callback);
     }
 
-    end() {
+    end(): void {
         this.connection.end();
     }
 
-    setHost(host) {
+    setHost(host: string): void {
         this.connectionDetails.host = host;
         this.reconnect();
     }
 
-    setUser(user) {
+    setUser(user: string): void {
         this.connectionDetails.user = user;
         this.reconnect();
     }
 
-    setPassword(password) {
+    setPassword(password: string): void {
         this.connectionDetails.password = password;
         this.reconnect();
     }
 
-    setDatabase(database) {
+    setDatabase(database: string): void {
         this.connectionDetails.database = database;
         this.reconnect();
     }
 
-    reconnect() {
+    private reconnect(): void {
         this.connection = mysql.createConnection(this.connectionDetails);
         this.connect();
     }
 }
 
-module.exports = MySqlConnection;
+export = MySqlConnection;

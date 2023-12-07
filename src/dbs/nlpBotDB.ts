@@ -1,6 +1,5 @@
-const mysql = require('mysql')
-
-const dbManager = require('../nlps/dbNllp')
+import * as mysql from 'mysql';
+import dbManager from '../nlps/dbNllp';
 
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -18,11 +17,10 @@ connection.query('SHOW TABLES', function (error, results) {
     if (error) console.log(error);
     let tableNames
     if (results) {
-        tableNames = results.map(result => result[`Tables_in_${connection.config.database}`]);
+        tableNames = results.map((result: { [x: string]: any; }) => result[`Tables_in_${connection.config.database}`]);
     }
     console.log(tableNames);
     dbManager.addNamedEntityText('table', tableNames, ['en'], tableNames);
 });
 
-
-module.exports = connection;
+export default connection;

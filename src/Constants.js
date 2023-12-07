@@ -1,0 +1,1 @@
+export default SEARCH_INTENT = "query.search"
