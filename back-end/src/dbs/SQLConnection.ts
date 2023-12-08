@@ -3,6 +3,7 @@ import * as mysql from 'mysql';
 class MySqlConnection {
     private connectionDetails: mysql.ConnectionConfig;
     private connection: mysql.Connection;
+    config: any;
 
     constructor(host: string, user: string, password: string, database: string) {
         this.connectionDetails = {
