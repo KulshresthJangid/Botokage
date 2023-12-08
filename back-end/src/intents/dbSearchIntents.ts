@@ -1,11 +1,11 @@
-const dbManager = require('../nlps/dbNllp')
+const { NlpManager } = require('node-nlp');
+import dbManager from '../nlps/dbNllp';
 
-const trainForSearchIntent = async () => {
+const trainForSearchIntent = async (): Promise<void> => {
     dbManager.addAnswer('en', 'query.search', 'Sure, which table should I search?');
 
-
     dbManager.addDocument('en', 'search for all %table%', 'query.search');
-    dbManager.addDocument('en', 'find all orders for %table% ', 'query.search');
+    dbManager.addDocument('en', 'find all orders for %table%', 'query.search');
     dbManager.addDocument('en', 'get all products that are out of stock', 'query.search');
     dbManager.addDocument('en', 'show all orders placed between 1st and 15th of this month', 'query.search');
     dbManager.addDocument('en', 'list all employees who work in the marketing department', 'query.search');
@@ -14,7 +14,7 @@ const trainForSearchIntent = async () => {
     dbManager.addNamedEntityText('table', 'users', ['en'], ['Users']);
 
     await dbManager.train();
-    console.log("dbManager Trained successfully")
-}
+    console.log("dbManager Trained successfully");
+};
 
 trainForSearchIntent();
