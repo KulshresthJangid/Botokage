@@ -22,34 +22,34 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.use(express.json())
 app.use('/searchQuery', searchRouter)
-logRoutes(app);
+// logRoutes(app);
 
 
 
-function logRoutes(app: express.Express) {
-    const routes: { path: string; methods: string[] }[] = [];
-    collectRoutes(app._router, '');
+// function logRoutes(app: express.Express) {
+//     const routes: { path: string; methods: string[] }[] = [];
+//     collectRoutes(app._router, '');
 
-    console.log('\nAvailable Routes:');
-    routes.forEach((route) => {
-        console.log(`${route.path} - [${route.methods.join(', ')}]`);
-    });
+//     console.log('\nAvailable Routes:');
+//     routes.forEach((route) => {
+//         console.log(`${route.path} - [${route.methods.join(', ')}]`);
+//     });
 
-    function collectRoutes(router: express.IRouter, basePath: string) {
-        router.stack.forEach((middleware: any) => {
-            if (middleware.route) {
-                const route = middleware.route;
-                const methods = Object.keys(route.methods).filter((method) => route.methods[method]);
-                routes.push({
-                    path: basePath + route.path,
-                    methods: methods as string[],
-                });
-            } else if (middleware.name === 'router') {
-                collectRoutes(middleware.handle, basePath + middleware.regexp);
-            }
-        });
-    }
-}
+//     function collectRoutes(router: express.IRouter, basePath: string) {
+//         router.stack.forEach((middleware: any) => {
+//             if (middleware.route) {
+//                 const route = middleware.route;
+//                 const methods = Object.keys(route.methods).filter((method) => route.methods[method]);
+//                 routes.push({
+//                     path: basePath + route.path,
+//                     methods: methods as string[],
+//                 });
+//             } else if (middleware.name === 'router') {
+//                 collectRoutes(middleware.handle, basePath + middleware.regexp);
+//             }
+//         });
+//     }
+// }
 
 
 

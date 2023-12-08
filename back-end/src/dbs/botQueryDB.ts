@@ -15,7 +15,11 @@ class MySqlConnection {
     }
 
     connect(): void {
-        this.connection.connect();
+        try {
+            this.connection.connect();
+        } catch (error) {
+            console.log("Error while connecting to DB", error)
+        }
     }
 
     query(sql: string, values: any, callback: (error: mysql.MysqlError | null, results: any, fields: mysql.FieldInfo[] | undefined) => void): void {
