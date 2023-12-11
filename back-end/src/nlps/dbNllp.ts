@@ -1,4 +1,4 @@
-const { NlpManager } = require('node-nlp');
+import { NlpManager } from "node-nlp-typescript";
 
 const dbManager = new NlpManager({ languages: ['en'] })
 

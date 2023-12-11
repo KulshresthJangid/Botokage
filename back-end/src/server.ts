@@ -6,6 +6,7 @@ import http from 'http';
 
 import BotokageSQL from './startupProcess/BotoKageSQL';
 import BotokageConnection from './startupProcess/BotoKageMongo';
+import { NlpManager } from 'node-nlp-typescript';
 
 BotokageSQL;
 BotokageConnection;
