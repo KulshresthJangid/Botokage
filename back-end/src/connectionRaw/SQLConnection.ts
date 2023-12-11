@@ -18,6 +18,7 @@ class MySqlConnection {
     connect(): void {
         try {
             this.connection.connect();
+            console.log("SQL Connection estabilshed with: ", this.connectionDetails.host, this.connectionDetails.password, this.connectionDetails.database);
         } catch (error) {
             console.log("Error while connecting to DB", error)
         }
