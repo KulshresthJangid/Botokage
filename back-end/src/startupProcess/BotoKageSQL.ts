@@ -7,7 +7,7 @@ const botokageSqlUser: string = process.env.BOTOKAGE_SQL_USER || 'root';
 const botokageSqlPass: string = process.env.BOTOKAGE_SQL_PASSWORD || 'root';
 const botokageSqlDbName: string = process.env.BOTOKAGE_SQL_DB_NAME || 'botokage_test_db';
 
-const botokageSqlConnection = new MySqlConnection(botokageSqlHost, botokageSqlUser,botokageSqlPass, botokageSqlDbName);
-botokageSqlConnection.connect();
+const BotokageSQL = new MySqlConnection(botokageSqlHost, botokageSqlUser,botokageSqlPass, botokageSqlDbName);
+BotokageSQL.connect();
 
-export default botokageSqlConnection;
+export default BotokageSQL;
