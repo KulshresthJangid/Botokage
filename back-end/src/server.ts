@@ -4,7 +4,7 @@ import express, {Request, Response, NextFunction, Express} from 'express';
 import { Server, Socket } from 'socket.io';
 import http from 'http';
 
-import botokageSqlConnection from './startupProcess/botokageDbConnection';
+import botokageSqlConnection from './startupProcess/startupSQL';
 
 botokageSqlConnection;
 
