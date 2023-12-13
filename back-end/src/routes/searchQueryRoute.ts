@@ -1,18 +1,11 @@
-import express from 'express';
-import dbManager from '../nlps/dbNllp';
+import express, {Request, Response} from 'express';
 
 const router = express.Router();
 
-router.get('/search/:userQuery', async (req, res) => {
+router.get("/", (req: Request, res: Response) => {
     res.send({
-        msg: "Not working Under development"
+        msg: "Under development."
     })
-});
-
-router.post('/train', async (req, res) => {
-    res.send({
-        msg: "Not Working Under development"
-    })
-});
+})
 
 export default router;

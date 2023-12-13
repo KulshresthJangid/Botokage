@@ -6,7 +6,9 @@ import http from 'http';
 
 import BotokageSQL from './startupProcess/BotoKageSQL';
 import BotokageConnection from './startupProcess/BotoKageMongo';
-import { NlpManager } from 'node-nlp-typescript';
+
+import nlpRoutes from './routes/searchQueryRoute';
+
 
 BotokageSQL;
 BotokageConnection;
@@ -16,6 +18,9 @@ const app: Express = express();
 const server = http.createServer(app);
 
 const io = new Server(server);
+
+
+app.use('/nlp' ,nlpRoutes);
 
 
 io.on('connection', (socket: Socket) => {
