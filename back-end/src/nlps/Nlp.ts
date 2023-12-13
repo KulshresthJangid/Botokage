@@ -22,7 +22,7 @@ export interface NlpManagerSettings {
 
 class Nlp {
     protected nlpManager: NlpManager;
-    protected languages: string[] | undefined;
+    protected languages: string[];
 
     constructor(languages: string[]) {
         // Assuming NlpManagerOptions here, adjust as needed based on library updates
