@@ -17,7 +17,8 @@
     "mongodb": "^6.3.0",
     "mysql": "^2.18.1",
     "nlp_compromise": "^7.0.0",
-    "node-nlp-typescript": "^1.0.3",
+    "node-nlp": "^4.27.0",
+    "node-nlp-typescript": "^0.1.31",
     "nodemon": "^3.0.2",
     "socket.io": "^4.7.2"
   },

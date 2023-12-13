@@ -7,7 +7,7 @@ import http from 'http';
 import BotokageSQL from './startupProcess/BotoKageSQL';
 import BotokageConnection from './startupProcess/BotoKageMongo';
 
-import nlpRoutes from './routes/searchQueryRoute';
+import nlpRoutes from './routes/nlpRoutes';
 
 
 BotokageSQL;
@@ -19,6 +19,9 @@ const server = http.createServer(app);
 
 const io = new Server(server);
 
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 app.use('/nlp' ,nlpRoutes);
 

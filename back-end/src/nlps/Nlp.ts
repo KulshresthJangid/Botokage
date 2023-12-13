@@ -1,4 +1,6 @@
-import { NlpManager } from "node-nlp-typescript";
+// import { NlpManager } from "node-nlp-typescript";
+
+const { NlpManager } = require('node-nlp');
 
 export interface NlpManagerSettings {
     container?: any;
@@ -21,7 +23,7 @@ export interface NlpManagerSettings {
 }
 
 class Nlp {
-    protected nlpManager: NlpManager;
+    protected nlpManager;
     protected languages: string[];
 
     constructor(languages: string[]) {
