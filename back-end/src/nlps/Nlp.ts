@@ -47,6 +47,11 @@ class Nlp {
 
         await this.nlpManager.train();
     }
+
+    async processText(text: string) {
+        console.log("process nlp-------", this.nlpManager.process(text));
+        return await this.nlpManager.process(text);
+    }
 }
 
 export default Nlp;

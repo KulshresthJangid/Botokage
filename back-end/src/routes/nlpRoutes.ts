@@ -28,7 +28,7 @@ router.post("/setLanguage/:userId", (req: Request, res: Response) => {
     });
 });
 
-router.get("/setIntent/:userId", async (req: Request, res: Response) => {
+router.post("/setIntent/:userId", async (req: Request, res: Response) => {
     let { intentName, utterances } : { intentName: string, utterances: string[] } = req.body;
     let userId: string = req.params.userId;
     let userNlp: Nlp;
@@ -45,6 +45,24 @@ router.get("/setIntent/:userId", async (req: Request, res: Response) => {
         res.send({
             success: false,
             msg: "Error no NLP found for user."
+        })
+    }
+});
+
+router.get("/testIntent/:userId", async (req: Request, res: Response) => {
+    let { userText } : { userText: string } = req.body;
+    let userId: string = req.params.userId;
+    let userNlp: Nlp = userNlps[userId];
+    if(userNlp) {
+        let nlpResponse = await userNlp.processText(userText);
+        res.send({
+            success: true,
+            nlpResponse,
+        })
+    } else {
+        res.send({
+            success: false,
+            msg: "No NLP Found for user"
         })
     }
 })
