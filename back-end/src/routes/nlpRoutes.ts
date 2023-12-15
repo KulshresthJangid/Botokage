@@ -29,10 +29,10 @@ router.post("/setLanguage/:userId", (req: Request, res: Response) => {
 });
 
 router.post("/setIntent/:userId", async (req: Request, res: Response) => {
-    let { intentName, utterances } : { intentName: string, utterances: string[] } = req.body;
+    let { intentName, utterances }: { intentName: string, utterances: string[] } = req.body;
     let userId: string = req.params.userId;
     let userNlp: Nlp;
-    if(userNlps[userId]) {
+    if (userNlps[userId]) {
         userNlp = userNlps[userId];
         await utterances.forEach((el: string) => {
             userNlp.createIntent(intentName, el);
@@ -50,10 +50,10 @@ router.post("/setIntent/:userId", async (req: Request, res: Response) => {
 });
 
 router.get("/testIntent/:userId", async (req: Request, res: Response) => {
-    let { userText } : { userText: string } = req.body;
+    let { userText }: { userText: string } = req.body;
     let userId: string = req.params.userId;
     let userNlp: Nlp = userNlps[userId];
-    if(userNlp) {
+    if (userNlp) {
         let nlpResponse = await userNlp.processText(userText);
         res.send({
             success: true,
@@ -65,6 +65,6 @@ router.get("/testIntent/:userId", async (req: Request, res: Response) => {
             msg: "No NLP Found for user"
         })
     }
-})
+});
 
 export default router;
