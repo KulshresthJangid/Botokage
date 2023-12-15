@@ -34,23 +34,35 @@ class Nlp {
         this.languages = languages;
     }
 
-    async createIntent(intentName: string, utterance: string, entities?: string[], categoryName?: string): Promise<void> {
+    async createIntent(intentName: string, utterance: string, entities?: string[], categoryName?: string, answer?: string): Promise<void> {
         if (entities && categoryName) {
-            await entities.forEach(el => this.createAndAddEntity(categoryName, el, [utterance]));;
+            await entities.forEach(el => this.createAndAddEntity(categoryName, el, [utterance]));
+        }
+        if (answer) {
+            console.log("inside the answers", answer);
+            await this.nlpManager.addAnswer(this.languages[0], intentName, answer);
         }
         await this.nlpManager.addDocument(this.languages[0], utterance, intentName);
         await this.nlpManager.train();
+        await this.nlpManager.save();
     }
 
     async createAndAddEntity(categoryName: string, entityName: string, utterances: string[]): Promise<void> {
-        this.nlpManager.addNamedEntityText(categoryName, entityName, this.languages || [], utterances);
+        await this.nlpManager.addNamedEntityText(categoryName, entityName, this.languages || [], utterances);
 
         await this.nlpManager.train();
+        await this.nlpManager.save();
     }
 
     async processText(text: string) {
-        console.log("process nlp-------", this.nlpManager.process(text));
-        return await this.nlpManager.process(text);
+        console.log("process nlp-------", await this.nlpManager.process(text));
+        return await this.nlpManager.process(this.languages[0], text);
+    }
+
+    async addAnswer(answer: string, intentName: string) {
+        await this.nlpManager.addAnswer(this.languages[0], intentName, answer);
+        await this.nlpManager.train();
+        await this.nlpManager.save();
     }
 }
 

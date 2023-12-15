@@ -29,14 +29,14 @@ router.post("/setLanguage/:userId", (req: Request, res: Response) => {
 });
 
 router.post("/setIntent/:userId", async (req: Request, res: Response) => {
-    let { intentName, utterances }: { intentName: string, utterances: string[] } = req.body;
+    let { intentName, utterances, answer, }: { intentName: string, utterances: string[], answer: string } = req.body;
     let userId: string = req.params.userId;
     let userNlp: Nlp;
     if (userNlps[userId]) {
         userNlp = userNlps[userId];
         await utterances.forEach((el: string) => {
-            userNlp.createIntent(intentName, el);
-        })
+           userNlp.createIntent(intentName, el, undefined, undefined, answer);
+        });
         res.send({
             success: true,
             msg: "Intents saved and added to NLP successfully."
@@ -53,18 +53,28 @@ router.get("/testIntent/:userId", async (req: Request, res: Response) => {
     let { userText }: { userText: string } = req.body;
     let userId: string = req.params.userId;
     let userNlp: Nlp = userNlps[userId];
+    
     if (userNlp) {
-        let nlpResponse = await userNlp.processText(userText);
-        res.send({
-            success: true,
-            nlpResponse,
-        })
+        try {
+            let nlpResponse = await userNlp.processText(userText);
+            res.send({
+                success: true,
+                msg: nlpResponse.answers,
+            });
+        } catch (error) {
+            console.error("Error processing text:", error);
+            res.status(500).send({
+                success: false,
+                msg: "Internal server error",
+            });
+        }
     } else {
         res.send({
             success: false,
-            msg: "No NLP Found for user"
-        })
+            msg: "No NLP Found for user",
+        });
     }
 });
+
 
 export default router;
