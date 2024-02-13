@@ -3,6 +3,7 @@ import Nlp from '../nlps/Nlp';
 import { NlpInfo } from '../nlps/NlpInfo';
 import { IntentOperations } from '../enums/IntentOperations';
 import BotokageSQL from '../startupProcess/BotoKageSQL';
+import MySqlConnection from '../connectionRaw/SQLConnection';
 
 const router = express.Router();
 
@@ -37,19 +38,26 @@ router.post("/setLanguage/:userId", (req: Request, res: Response) => {
 
 router.post("/setIntent/:userId", async (req: Request, res: Response) => {
 
-    let { intentName, utterances, answer, entities, categoryName, operationName, operation }: 
+    let { intentName, utterances, answer, entities, entityCategoryName, operationName, operationDetails }: 
     { intentName: string, utterances: string[], answer: string, entities: string[], 
-    categoryName: string, operationName: IntentOperations, operation: string } 
+        entityCategoryName: string, operationName: IntentOperations, operationDetails: string } 
     = req.body;
 
     
     let userId: string = req.params.userId;
-    BotokageSQL.query('INSERT INTO user_operations (user_id, operation_type, operation, intent_name) VALUES (?, ?, ?, ?)', [userId, operationName, operation, intentName], () => {console.log('user operations saved successfylly')});
+    console.log(userId, operationDetails, operationName, intentName)
+    await BotokageSQL.query('INSERT INTO user_operations (user_id, operation_type, operation_details, intent_name) VALUES (?, ?, ?, ?)', [userId, operationName, operationDetails, intentName], (err, res) => {
+        if(err) {
+            console.log("Error while inserting the data in to table", err);
+        } else {
+            console.log("Saved it", res)
+        }
+    });
     let userNlp: Nlp;
     if (userNlps[userId]) {
         userNlp = userNlps[userId].Nlp;
         await utterances.forEach((el: string) => {
-            userNlp.createIntent(intentName, el, entities, categoryName, answer);
+            userNlp.createIntent(intentName, el, entities, entityCategoryName, answer);
         });
         res.send({
             success: true,
@@ -71,10 +79,40 @@ router.get("/testIntent/:userId", async (req: Request, res: Response) => {
     if (userNlp) {
         try {
             let nlpResponse = await userNlp.processText(userText);
+            let intentName = nlpResponse.intent;
+            if(intentName) {
+                await BotokageSQL.query(`SELECT * FROM user_operations WHERE intent_name = ?`, [intentName], (err, res) => {
+                    if(err) {
+                        console.log('Error while fetchging the data from the table', err);
+                    } else {
+                        console.log("found the entry", res)
+
+                        if(res[0]['operation_type'] == 'DB_CONNECTION') {
+                            console.log("NOt getting in")
+                            try {
+                                let tempDbObj = new MySqlConnection('localhost', 'root', 'root', res[0]['operation_details']);
+                                tempDbObj.connect();
+                                // res.status(200).send({
+                                //     message: "DB Connection established",
+                                // });
+                                return;
+                            } catch (e) {
+                                // res.status(500).send({
+                                //     message: "Internal Server Error",
+                                //     error: e,                                    
+                                // });
+                                return;
+                            }
+
+                        }
+                    }
+                })
+            }
             res.send({
                 success: true,
                 msg: nlpResponse.answers,
-                entity: nlpResponse.entities[0]
+                entity: nlpResponse.entities[0],
+                intent: nlpResponse.intent
             });
         } catch (error) {
             console.error("Error processing text:", error);

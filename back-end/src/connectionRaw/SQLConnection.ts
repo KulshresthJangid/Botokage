@@ -25,7 +25,11 @@ class MySqlConnection {
     }
 
     query(sql: string, values: any, callback: (error: mysql.MysqlError | null, results: any, fields: mysql.FieldInfo[] | undefined) => void): void {
-        this.connection.query(sql, values, callback);
+        try {
+            this.connection.query(sql, values, callback);
+        } catch (error) {
+            throw new Error("Error while inserting in DB");
+        }
     }
 
     end(): void {
