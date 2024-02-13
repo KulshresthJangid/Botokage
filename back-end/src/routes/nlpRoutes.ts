@@ -1,9 +1,12 @@
 import express, { Request, Response } from 'express';
 import Nlp from '../nlps/Nlp';
+import { NlpInfo } from '../nlps/NlpInfo';
+import { IntentOperations } from '../enums/IntentOperations';
+import BotokageSQL from '../startupProcess/BotoKageSQL';
 
 const router = express.Router();
 
-const userNlps: Record<string, Nlp> = {};
+const userNlps: Record<string, NlpInfo> = {};
 
 router.post("/setLanguage/:userId", (req: Request, res: Response) => {
 
@@ -13,11 +16,15 @@ router.post("/setLanguage/:userId", (req: Request, res: Response) => {
     console.log("req.body--------", req.body)
 
     let userNlp: Nlp;
+    let nlpInfo: NlpInfo;
     if (userNlps[userId]) {
-        userNlp = userNlps[userId];
+        userNlp = userNlps[userId].Nlp;
     } else {
-        userNlps[userId] = new Nlp(languages);
+        userNlp = new Nlp(languages);
+        nlpInfo = new NlpInfo(userNlp, undefined, undefined);
+        userNlps[userId] = nlpInfo;
     }
+
 
     console.log('languages------', languages)
 
@@ -29,13 +36,20 @@ router.post("/setLanguage/:userId", (req: Request, res: Response) => {
 });
 
 router.post("/setIntent/:userId", async (req: Request, res: Response) => {
-    let { intentName, utterances, answer, }: { intentName: string, utterances: string[], answer: string } = req.body;
+
+    let { intentName, utterances, answer, entities, categoryName, operationName, operation }: 
+    { intentName: string, utterances: string[], answer: string, entities: string[], 
+    categoryName: string, operationName: IntentOperations, operation: string } 
+    = req.body;
+
+    
     let userId: string = req.params.userId;
+    BotokageSQL.query('INSERT INTO user_operations (user_id, operation_type, operation, intent_name) VALUES (?, ?, ?, ?)', [userId, operationName, operation, intentName], () => {console.log('user operations saved successfylly')});
     let userNlp: Nlp;
     if (userNlps[userId]) {
-        userNlp = userNlps[userId];
+        userNlp = userNlps[userId].Nlp;
         await utterances.forEach((el: string) => {
-           userNlp.createIntent(intentName, el, undefined, undefined, answer);
+            userNlp.createIntent(intentName, el, entities, categoryName, answer);
         });
         res.send({
             success: true,
@@ -52,14 +66,15 @@ router.post("/setIntent/:userId", async (req: Request, res: Response) => {
 router.get("/testIntent/:userId", async (req: Request, res: Response) => {
     let { userText }: { userText: string } = req.body;
     let userId: string = req.params.userId;
-    let userNlp: Nlp = userNlps[userId];
-    
+    let userNlp: Nlp = userNlps[userId].Nlp;
+
     if (userNlp) {
         try {
             let nlpResponse = await userNlp.processText(userText);
             res.send({
                 success: true,
                 msg: nlpResponse.answers,
+                entity: nlpResponse.entities[0]
             });
         } catch (error) {
             console.error("Error processing text:", error);

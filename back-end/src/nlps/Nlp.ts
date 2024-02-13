@@ -36,7 +36,8 @@ class Nlp {
 
     async createIntent(intentName: string, utterance: string, entities?: string[], categoryName?: string, answer?: string): Promise<void> {
         if (entities && categoryName) {
-            await entities.forEach(el => this.createAndAddEntity(categoryName, el, [utterance]));
+            await entities.forEach(el => this.createAndAddEntity(categoryName, el, [el.toLowerCase(), el]));
+            console.log(`Entities added here`, entities)
         }
         if (answer) {
             console.log("inside the answers", answer);
